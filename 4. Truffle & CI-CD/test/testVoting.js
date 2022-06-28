@@ -13,6 +13,139 @@ contract('Voting', function (accounts) {
     let votingInstance;
 
 
+
+    describe("GETTER voter Tests", function () { // Ensemble des tests pour la fonctionnalité de récupération des utilisateurs enregistrés comme votants
+        beforeEach(async function () {
+            votingInstance = await Voting.new({from : owner});
+        });
+
+        it ("...should not return a non voter, revert ", async function() {
+             await expectRevert(votingInstance.getVoter(user1, {from : owner}), "You're not a voter");
+        });
+
+        it ("... should not return a non registered user", async function () {
+            await votingInstance.addVoter(owner, {from : owner});
+            const storedData = await votingInstance.getVoter(user1, {from : owner});
+            expect(storedData.isRegistered).to.equal(false);
+        });
+
+
+        it ("... should return a registerd user", async function () {
+            await votingInstance.addVoter(owner, {from : owner});
+            await votingInstance.addVoter(user1, {from : owner});
+            const storedData = await votingInstance.getVoter(user1, {from : owner});
+            expect(storedData.isRegistered).to.equal(true);
+        });
+
+    });
+
+
+    describe("GETTER proposal Tests", function () { // Ensemble des tests sur la fonctionnalité de récupération des proposition
+        beforeEach(async function () {
+            votingInstance = await Voting.new({from : owner});
+        });
+
+        it ("...should not return a non voter, revert ", async function() {
+             await expectRevert(votingInstance.getOneProposal(user1, {from : owner}), "You're not a voter");
+        });
+
+    });
+
+
+    /*    
+        it ("... should not return a non registered proposal", async function () {
+            await votingInstance.addVoter(owner, {from : owner});
+            await votingInstance.startProposalsRegistering({from : owner});
+            await votingInstance.addProposal("Plus de frites", {from : owner});
+            const storedData = await votingInstance.getOneProposal(1, {from : owner});
+            expect(storedData proposalsArray[0]).to.equal(""); // TODO
+        });
+
+
+        it ("... should return a registered proposal", async function () {
+            await votingInstance.addVoter(owner, {from : owner});
+            await votingInstance.addProposol("Plus de frites", {from : owner});
+            const storedData = await votingInstance.getOneProposal(0, {from : owner});
+            expect(new BN(storedData proposalsArray[0])).to.equal(new BN[0]); // TODO
+        });
+
+    });
+*/
+
+    describe("REGISTRATION voters tests", function () { // Ensemble de tests sur la fonctionnalité d'enregistrement des votants
+        beforeEach(async function() {
+            votingInstance = await Voting.new({from : owner});
+        });
+           
+        it ("... should add a voter in mapping", async function() { // Test de l'ajout d'une personne sur la liste des votants autorisés dans le mapping
+            await votingInstance.addVoter(user1, {from : owner});  
+            const storedData = await votingInstance.getVoter(user1, {from : user1});
+            expect(storedData.isRegistered).to.equal(true);           
+        });
+
+
+        it ("... should not add a voter already registered, revert", async function () {
+            await votingInstance.addVoter(user1, {from : owner});  
+            await expectRevert(votingInstance.addVoter(user1, {from : owner}), "Already registered");
+        });
+
+
+        it ("... should emit VoterRegistered event", async function() {
+            
+            const findEvent = await votingInstance.addVoter(user1, {from : owner});
+            expectEvent(findEvent, "VoterRegistered", {voterAddress : user1});
+        });
+
+
+        it ("... should not add a voter when registration proposals is opened, revert", async function () {
+            await votingInstance.startProposalsRegistering({from : owner});
+            await expectRevert(votingInstance.addVoter(user1, {from : owner}), "Voters registration is not open yet");
+        });
+        
+
+
+    });
+
+
+
+    describe("REGISTRATION proposals tests", function () { // Ensemble de test sur la fonctionnalité d'enregistrement des propositions
+        beforeEach(async function () {
+            votingInstance = await Voting.new({from : owner});
+        });
+
+
+        it.only ("... should add a proposal in array", async function () {
+            await votingInstance.addVoter(user1, {from : owner});
+            await votingInstance.startProposalsRegistering({from : owner});
+            await votingInstance.addProposal("Plus de frites", {from : user1});
+            const storedData = await votingInstance.getOneProposal(0, {from : user1}) // Penser au await à cette ligne  !!!
+            expect(storedData.description).to.equal("Plus de frites");
+        });
+
+
+
+
+
+    });
+
+
+
+
+
+});
+
+
+
+/*
+
+
+
+
+
+
+
+
+
     // Description d'une catégorie de tests
     describe("Test de la fonction d'ajout d'une personne dans la liste des votants autorisés", function() {
 
@@ -118,7 +251,7 @@ contract('Voting', function (accounts) {
         })
 
         // Test de l'émission de l'événement enregistrement d'un votant
-        it.only ("... should emit voter registered", async function() {
+        it ("... should emit voter registered", async function() {
             const findEvent =  await votingInstance.addVoter(user1, {from : owner});
             expectEvent(findEvent, "VoterRegistered", {voterAddress : user1}); // Pourquoi on ne renseigne pas le paramètre _addr ? 
         })
@@ -148,4 +281,6 @@ contract('Voting', function (accounts) {
 
     })
 
-});    
+});  
+
+*/
