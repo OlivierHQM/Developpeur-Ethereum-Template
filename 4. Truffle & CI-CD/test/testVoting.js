@@ -14,7 +14,7 @@ contract('Voting', function (accounts) {
 
 
 
-    describe("GETTER voter Tests", function () { // Ensemble des tests pour la fonctionnalité de récupération des utilisateurs enregistrés comme votants
+    describe("GETTER voter tests", function () { // Ensemble des tests pour la fonctionnalité de récupération des utilisateurs enregistrés comme votants
         beforeEach(async function () {
             votingInstance = await Voting.new({from : owner});
         });
@@ -40,7 +40,7 @@ contract('Voting', function (accounts) {
     });
 
 
-    describe("GETTER proposal Tests", function () { // Ensemble des tests sur la fonctionnalité de récupération des proposition
+    describe("GETTER proposal tests", function () { // Ensemble des tests sur la fonctionnalité de récupération des proposition
         beforeEach(async function () {
             votingInstance = await Voting.new({from : owner});
         });
@@ -114,7 +114,7 @@ contract('Voting', function (accounts) {
         });
 
 
-        it.only ("... should add a proposal in array", async function () {
+        it ("... should add a proposal in array", async function () {
             await votingInstance.addVoter(user1, {from : owner});
             await votingInstance.startProposalsRegistering({from : owner});
             await votingInstance.addProposal("Plus de frites", {from : user1});
@@ -123,6 +123,19 @@ contract('Voting', function (accounts) {
         });
 
 
+        it ("... should not add a proposal if there is no description", async function () {
+            await votingInstance.addVoter(user1, {from : owner});
+            await votingInstance.startProposalsRegistering({from : owner});
+            await expectRevert(votingInstance.addProposal("", {from : user1}), "ous ne pouvez pas ne rien proposer");            
+        });
+
+
+        it ("... should emit ProposalRegistered event when a proposal is added", async function () {
+            await votingInstance.addVoter(user1, {from : owner});
+            await votingInstance.startProposalsRegistering({from : owner});     
+            const findEvent = await votingInstance.addProposal("Plus de frites", {from : user1});
+            expectEvent(findEvent, "ProposalRegistered", {proposalId : new BN(0)} );      
+        });
 
 
 
