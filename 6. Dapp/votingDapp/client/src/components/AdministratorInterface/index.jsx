@@ -1,44 +1,15 @@
-
-
-
-
-
-
-
-
-import {useEffect, useState} from "react";
+import {useState} from "react";
 import useEth from "../../contexts/EthContext/useEth";
 import React from 'react';
 import Title from "./Title";
 import Desc from "./Desc";
 
 
-
-
-
-
-
-function AdministratorInterface() {
-  const { state: { accounts, contract } } = useEth();
+function AdministratorInterface(props) {
+  const { state: { contract } } = useEth();
 
   const [inputValue, setInputValue] = useState("");
-  const [owner, setOwner] = useState("")
-  const [registeredVoters, setRegisteredVoters] = useState([])
-
-   const  searchOwner = async () =>  {
-    if (contract) {
-      let ownerResp = await contract.methods.owner().call();
-      setOwner(ownerResp)
-      console.log(owner)
-    }
-
-   }
-
-  useEffect( () => {
-    searchOwner();
-
-  });
-
+  //const [registeredVoters, setRegisteredVoters] = useState([])
 
   const handleInputChange = e => {
     setInputValue(e.target.value);
@@ -50,91 +21,39 @@ function AdministratorInterface() {
       return;
     }
 
-
-
-
-
-    contract.events.VoterRegistered()
-      .on('data', event => {
-        console.log(event)
-        console.log(event.returnValues)
-        console.log(event.returnValues.voterAddress)
-
-        setRegisteredVoters((pre) => {
-          pre.push(event.returnValues.voterAddress)
-          return pre;
-        })
-
-        console.log(registeredVoters)
-      })
-      .on('changed', changed => console.log('changed' + JSON.stringify(changed)))
-      .on('error', error => console.log(error))
-      .on('connected', connected => console.log(connected))
-
-
-
+    
     try {
-      let addVoterResp = await contract.methods.addVoter(inputValue).send({ from: accounts[0] });
-      console.log('addVoterResp' + addVoterResp)
-
+      await contract.methods.addVoter(inputValue).send({ from: props.connectedUser });
     }
     catch(err) {
       console.log('error' + err)
-
     }
-   //
-
-
   };
 
-  const refresh = async () => {
-    contract.getPastEvents('VoterRegistered').then(results => console.log(results)).catch(err => console.log(err));
-
-
-  }
-
   const startProposalsRegistering = async () => {
-    let  a = await contract.methods.workflowStatus().send({ from: accounts[0] });
-    console.log("a");
-    console.log(a);
-    let  startProposalsRegisteringResp = await contract.methods.startProposalsRegistering().send({ from: accounts[0] });
-    
-    console.log(startProposalsRegisteringResp);
-
+    await contract.methods.workflowStatus().send({ from: props.connectedUser });
+    await contract.methods.startProposalsRegistering().send({ from: props.connectedUser });
   }
 
   const endProposalsRegistering = async () => {
-    let  a = await contract.methods.workflowStatus().send({ from: accounts[0] });
-    console.log("a");
-    console.log(a);
-    let  endProposalsRegisteringResp = await contract.methods.endProposalsRegistering().send({ from: accounts[0] });
-    
-    console.log(endProposalsRegisteringResp);
-
+    await contract.methods.workflowStatus().send({ from: props.connectedUser });
+    await contract.methods.endProposalsRegistering().send({ from: props.connectedUser });
   }
 
 
   const startVotingSession = async () => {
-    let  a = await contract.methods.workflowStatus().send({ from: accounts[0] });
-    console.log("a");
-    console.log(a);
-    let  startVotingSessionResp = await contract.methods.startVotingSession().send({ from: accounts[0] });
-    
-    console.log(startVotingSessionResp);
-
+    await contract.methods.workflowStatus().send({ from: props.connectedUser });
+    await contract.methods.startVotingSession().send({ from: props.connectedUser });
   }
-
-
-
 
 
   return (
     <div className="administrator-interface">
       <Title /> 
       <Desc />
-      <p>Connected user address:  <span className="code">{accounts}</span></p>
+      <p>Connected user:  <span className="code">{props.connectedUser}</span></p>
 
-      <p>The contract owner  address is: <span className="code">{owner}</span></p>
+      <p>Contract owner:  <span className="code">{props.contractOwner}</span></p>
 
       <span>
         Address of voter to register:
@@ -142,29 +61,14 @@ function AdministratorInterface() {
         <button onClick={addVoter} >Add</button>
       </span>
 
+     
 
-      <div className="btns">
-
-      <button  onClick={refresh} >refresh</button>
-      </div>
-      <div className="container">
-        RegisteredVoters:
-        <p><span className="code">{registeredVoters}</span></p>
+      <div>
+         <button  onClick={startProposalsRegistering} >startProposalsRegistering</button>
+          <button  onClick={endProposalsRegistering} >endProposalsRegistering</button>
+          <button  onClick={startVotingSession} >startVotingSession</button>
       </div>
      
-      <div className="btns">
-
-      <button  onClick={startProposalsRegistering} >startProposalsRegistering</button>
-      </div>
-
-      <div>
-      <button  onClick={endProposalsRegistering} >endProposalsRegistering</button>
-      </div>
-
-      <div>
-      <button  onClick={startVotingSession} >startVotingSession</button>
-      </div>
-
 
 
 

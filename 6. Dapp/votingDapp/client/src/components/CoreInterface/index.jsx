@@ -7,9 +7,13 @@ import useEth from "../../contexts/EthContext/useEth";
 
 
 function CoreInterface() {
+  const { state: { contract, accounts } } = useEth(); 
+
   const [workflowStatus, setWorkflowStatus] = useState("");
-  const { state: { contract } } = useEth();
-  const votersListMock = ["address voter 1", "address voter 2"];
+  const [connectedUser, setConnectedUser] = useState("");
+  const [contractOwner, setContractOwner] = useState("");
+  const [registeredVoters, setRegisteredVoters] = useState([]);
+
   const proposalsListMock = [];
   const getWorkflowStatus = async () => {
     if (contract) {
@@ -27,30 +31,74 @@ function CoreInterface() {
           const newStatus = event.returnValues.newStatus;
           setWorkflowStatus(wfsAsString[newStatus]);
         })
-
     }
-
   }
+
+  const getConnectedUser = async () => {
+    if (accounts) {
+      setConnectedUser(accounts[0]);
+    }
+  }
+
+  const getContractOwner = async () => {
+    if (contract) {
+      const owner = await contract.methods.owner().call();
+      setContractOwner(owner);
+    }
+  }
+
+  const setEventsListeners = () => {
+    if (contract) {
+        contract.events.VoterRegistered()
+          .on('data', event => {
+
+            setRegisteredVoters((pre) => {
+              pre.push(event.returnValues.voterAddress)
+              console.log(pre);
+              return pre;
+
+            })
+
+            console.log("voter registered event received")
+          })
+          .on('changed', changed => console.log('changed' + JSON.stringify(changed)))
+          .on('error', error => console.log(error))
+          .on('connected', connected => console.log(connected))
+    }
+  }
+
+
+
+
 
 
   useEffect(()=> {
     getWorkflowStatus();
+    getConnectedUser();
+    getContractOwner();
+  })
+
+  useEffect(()=> {
+    setEventsListeners();
+
   })
 
 
   return (
     <>
-      <div className="container">
+      <div className="core-interface-container">
 
           <PublicView 
               votingStatus={workflowStatus}
-              votersList={votersListMock} 
+              votersList={registeredVoters} 
               proposalsList={proposalsListMock}  />
               
           <hr />
           <VoterInterface />
           <hr />
-          <AdministratorInterface />
+          <AdministratorInterface 
+              connectedUser={connectedUser} 
+              contractOwner={contractOwner}/>
           <hr />
 
         </div>
