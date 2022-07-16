@@ -1,9 +1,10 @@
 import { EthProvider } from "./contexts/EthContext";
 import Intro from "./components/Intro/";
-import Setup from "./components/Setup";
-import Demo from "./components/Demo";
+import AdministratorInterface from "./components/AdministratorInterface";
+import VoterInterface from "./components/VoterInterface";
 import Footer from "./components/Footer";
 import "./App.css";
+import PublicView from "./components/PublicView";
 
 function App() {
   return (
@@ -12,9 +13,11 @@ function App() {
         <div className="container">
           <Intro />
           <hr />
-          <Setup />
+          <PublicView />
           <hr />
-          <Demo />
+          <VoterInterface />
+          <hr />
+          <AdministratorInterface />
           <hr />
           <Footer />
         </div>

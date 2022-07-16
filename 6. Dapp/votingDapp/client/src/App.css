@@ -141,3 +141,21 @@ hr {
   display: inline-block;
   margin: 2rem 1rem 0 0;
 }
+
+
+#btn1{
+  background-color: rgb(202, 226, 43);
+}
+
+
+#btn2{
+  background-color: rgb(202, 226, 43);
+}
+
+
+.welcome {
+  text-align: center;
+}
+
+
+
