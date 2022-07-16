@@ -1,19 +1,12 @@
-import ProposalsList from "./ProposalsList";
-import Title from "./Title";
-import VotersList from "./VotersList";
-import VotingStatus from "./VotingStatus";
-
-
-function PublicView() {
+function PublicView(props) {
   return (
     <>
-      <Title />
-      <br />
-      <VotingStatus />
-      <br />
-      <VotersList />
-      <br />
-      <ProposalsList />
+      <div>
+      <h2>Public view</h2>
+    <h3>Voting status : {props.votingStatus}</h3>   
+    <h3>Voters list : {props.votersList}</h3>
+    <h3>Proposals list : {props.proposalsList}</h3>
+    </div>
     </>
   );
 }

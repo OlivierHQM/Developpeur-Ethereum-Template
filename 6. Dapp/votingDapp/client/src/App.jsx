@@ -1,25 +1,17 @@
 import { EthProvider } from "./contexts/EthContext";
 import Intro from "./components/Intro/";
-import AdministratorInterface from "./components/AdministratorInterface";
-import VoterInterface from "./components/VoterInterface";
-import Footer from "./components/Footer";
+import CoreInterface from "./components/CoreInterface";
 import "./App.css";
-import PublicView from "./components/PublicView";
 
-function App() {
+function App() {   
   return (
     <EthProvider>
       <div id="App" >
         <div className="container">
           <Intro />
           <hr />
-          <PublicView />
+          <CoreInterface></CoreInterface>
           <hr />
-          <VoterInterface />
-          <hr />
-          <AdministratorInterface />
-          <hr />
-          <Footer />
         </div>
       </div>
     </EthProvider>
@@ -27,3 +19,6 @@ function App() {
 }
 
 export default App;
+
+
+
