@@ -1,5 +1,5 @@
 function Title() {
-  return <h2>Administrator interface</h2>;
+  return <h1>Administrator interface</h1>;
 }
 
 export default Title;

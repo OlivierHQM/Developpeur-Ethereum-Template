@@ -9,9 +9,7 @@ function App() {
       <div id="App" >
         <div className="container">
           <Intro />
-          <hr />
           <CoreInterface></CoreInterface>
-          <hr />
         </div>
       </div>
     </EthProvider>

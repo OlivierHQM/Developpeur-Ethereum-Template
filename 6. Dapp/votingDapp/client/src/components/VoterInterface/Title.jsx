@@ -1,5 +1,5 @@
 function Title() {
-  return <h2>Voter interface</h2>;
+  return <h1>Voter interface</h1>
 }
 
 export default Title;
