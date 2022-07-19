@@ -29,7 +29,7 @@ contract Voting is Ownable {
     }
 
     WorkflowStatus public workflowStatus;
-    Proposal[] proposalsArray;
+    Proposal[] proposalsArray; // Peut-on récupérer le tableau dans l'abi s'il est déclaré "public" ? 
     mapping (address => Voter) voters;
     address[] public registeredVoters; // Ajout
 
@@ -140,11 +140,20 @@ contract Voting is Ownable {
    function tallyVotes() external onlyOwner {
        require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Current status is not voting session ended");
        uint _winningProposalId;
-      for (uint256 p = 0; p < proposalsArray.length; p++) {
+      for (uint256 p = 0; p < proposalsArray.length && gasleft () > 200000; p++) { // Correction de la faille de sécurité DOS en cas de soumissions excessives de propositions.
            if (proposalsArray[p].voteCount > proposalsArray[_winningProposalId].voteCount) {
                _winningProposalId = p;
           }
        }
+
+
+
+
+
+
+
+
+
        winningProposalID = _winningProposalId;
        
        workflowStatus = WorkflowStatus.VotesTallied;

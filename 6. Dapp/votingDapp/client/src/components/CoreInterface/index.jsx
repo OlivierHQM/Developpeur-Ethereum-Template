@@ -8,67 +8,67 @@ import React from "react";
  
  
 function CoreInterface() {
-  const { state: { contract, accounts } } = useEth();
+  const { state: { contract, accounts } } = useEth(); {/* Déclaration de ce hook pour récupérer des contrats et des adresses sur la blockchain via ETH provider (?) */}
  
-  const [workflowStatus, setWorkflowStatus] = useState("");
-  const [connectedUser, setConnectedUser] = useState("");
-  const [contractOwner, setContractOwner] = useState("");
-  const [registeredVoters, setRegisteredVoters] = useState([]);
-  const [proposalsList, setProposalsList] = useState([]);
-  const [publicViewMessage, setPublicViewMessage] = useState('No message to display');
-  const [administratorInterfaceMessage, setAdministratorInterfaceMessage] = useState('No message to display');
-  const [voterInterfaceMessage, setVoterInterfaceMessage] = useState('No message to display');
+  const [workflowStatus, setWorkflowStatus] = useState(""); {/* Déclaration de ces deux fonctions pour récupérer le workflow status sur la blockchain en appelant le contrat*/}
+  const [connectedUser, setConnectedUser] = useState(""); {/* Déclaration de ces deux fonctions pour récupérer l'adresse de l'utisateur actuel en appelant le contrat*/}
+  const [contractOwner, setContractOwner] = useState("");  
+  const [registeredVoters, setRegisteredVoters] = useState([]); {/* Déclaration de ces deux fonctions pour récupérer l'état initial en appelant le contrat*/}
+  const [proposalsList, setProposalsList] = useState([]); {/* Déclaration de ces deux fonctions pour récupérer la liste des propositions en appelant le contrat*/}
+  const [publicViewMessage, setPublicViewMessage] = useState('No message to display'); {/* Déclaration de ces deux fonctions pour récupérer des événements en écoutant les emits du contrat + initialisation */}
+  const [administratorInterfaceMessage, setAdministratorInterfaceMessage] = useState('No message to display'); {/* Déclaration de ces deux fonctions pour récupérer des événements en écoutant les emits du contrat + initialisation */}
+  const [voterInterfaceMessage, setVoterInterfaceMessage] = useState('No message to display'); {/* Déclaration de ces deux fonctions pour récupérer des événements en écoutant les emits du contrat + initialisation */}
  
  
  
-  useEffect(()=> {
+  useEffect(()=> { {/* Déclenchement du hook qui appelle le contrat après chaque affichage du DOM  */}
     const getWorkflowStatus = async () => {
       if (contract) {
         let wfs = await contract.methods.workflowStatus().call();
-        const wfsAsString = [
+        const wfsAsString = [ 
           "RegisteringVoters",
           "ProposalsRegistrationStarted",
           "ProposalsRegistrationEnded",
           "VotingSessionStarted",
           "VotingSessionEnded",
-          "VotesTallied"];
-        setWorkflowStatus(wfsAsString[wfs]);
+          "VotesTallied"];{/* Déclaration d'un tableau qui récupère toutes les états possibles */}
+        setWorkflowStatus(wfsAsString[wfs]); {/* Récupération d'une chaine de caractères à partir du positionnement de l'état dans le tablau d'état du contrat */}
       }
     }
  
-    const getRegisteredvoters = async () => {
+    const getRegisteredvoters = async () => { {/* Déclenchement du hook qui appelle le contrat après chaque affichage du DOM */}
       if (contract) {
         let voters = await contract.methods.getAllVoters().call();
         setRegisteredVoters(voters);
       }
     }
  
-    const getAllProposals = async () => {
+    const getAllProposals = async () => { {/* Déclenchement du hook qui appelle le contrat après chaque affichage du DOM */}
       if (contract) {
         let proposals = await contract.methods.getAllProposals().call();
         setProposalsList(proposals);
       }
     }
  
-    const getConnectedUser = async () => {
+    const getConnectedUser = async () => { {/* Déclenchement du hook qui appelle le contrat après chaque affichage du DOM */}
       if (accounts) {
         setConnectedUser(accounts[0]);
       }
     }
  
-    const getContractOwner = async () => {
+    const getContractOwner = async () => { {/* Déclenchement du hook qui appelle le contrat après chaque affichage du DOM */}
       if (contract) {
         const owner = await contract.methods.owner().call();
         setContractOwner(owner);
       }
     }
  
-    getWorkflowStatus();
-    getConnectedUser();
-    getContractOwner();
-    getRegisteredvoters();
-    getAllProposals();
-  },[accounts, contract]);
+    getWorkflowStatus(); {/* Lancement de la fonction */}
+    getConnectedUser(); {/* Lancement de la fonction */}
+    getContractOwner(); {/* Lancement de la fonction */}
+    getRegisteredvoters(); {/* Lancement de la fonction */}
+    getAllProposals(); {/* Lancement de la fonction */}
+  },[accounts, contract]); {/* ????  */}
  
  
  
@@ -144,20 +144,22 @@ function CoreInterface() {
               votersList={registeredVoters}
               proposalsList={proposalsList}
               publicViewMessage={publicViewMessage}/>
-             
+             <div className="separator"></div>
           <hr />
           <VoterInterface
             connectedUser={connectedUser}
             voterInterfaceMessage={voterInterfaceMessage}/>
+            <div className="separator"></div>
           <hr />
           <AdministratorInterface
               connectedUser={connectedUser}
               contractOwner={contractOwner}
               administratorInterfaceMessage={administratorInterfaceMessage}/>
-          <hr />
-        <li><button  onClick={getWinner} >getWinner</button></li>
+      
+          <div className="separator"></div>
+        <button  onClick={getWinner} >getWinner</button>
         <div><span className="code-red">{administratorInterfaceMessage}</span></div>
- 
+        <div className="separator"></div>
         </div>
     </>
   );

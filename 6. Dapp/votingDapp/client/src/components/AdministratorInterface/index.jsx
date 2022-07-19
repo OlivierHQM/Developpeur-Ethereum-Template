@@ -5,15 +5,15 @@ import Title from "./Title";
 import Desc from "./Desc";
 
 
-function AdministratorInterface(props) {
-  const { state: { contract } } = useEth();
+function AdministratorInterface(props) { // Création du component AdminstratorInterface qui sera utilisé par Coreinterface
+  const { state: { contract } } = useEth(); // Déclaration d'un hook d'initialisation du contrat via EthProvider
 
-  const [inputValue, setInputValue] = useState("");
+  const [inputValue, setInputValue] = useState(""); // Déclaration d'un hook de récupération de valeur non initialisée 
   //const [registeredVoters, setRegisteredVoters] = useState([])
 
   const handleInputChange = e => {
-    setInputValue(e.target.value);
-  };
+    setInputValue(e.target.value); // Récupération d'une valeur saisie dans le DOM
+  }; 
 
   const addVoter = async e => {
     if (inputValue === "") {
@@ -23,15 +23,15 @@ function AdministratorInterface(props) {
 
     
     try {
-      await contract.methods.addVoter(inputValue).send({ from: props.connectedUser });
+      await contract.methods.addVoter(inputValue).send({ from: props.connectedUser }); // Recherche dans l'Abi du contrat la méthode addVoter et envoi si le clic est déclenché 
     }
     catch(err) {
       console.log('error' + err)
     }
   };
 
-  const startProposalsRegistering = async () => {
-    await contract.methods.startProposalsRegistering().send({ from: props.connectedUser });
+  const startProposalsRegistering = async () => { // Fonction qui appelle le contrat et demande un changement d'état 
+    await contract.methods.startProposalsRegistering().send({ from: props.connectedUser }); // 
   }
 
   const endProposalsRegistering = async () => {
@@ -55,7 +55,9 @@ function AdministratorInterface(props) {
   return (
     <div className="generic-container">
       <Title /> 
+      <br />
       <Desc />
+      <br />
       <div><span className="code-red">{props.administratorInterfaceMessage}</span></div>
       <h3>Connected user:  <span className="code">{props.connectedUser}</span></h3>
 
@@ -64,14 +66,14 @@ function AdministratorInterface(props) {
 
       <span>
         Address of voter to register:
-        <input type="text" placeholder="address" value={inputValue} onChange={handleInputChange}/>
+        <input type="text" placeholder="address" value={inputValue} onChange={handleInputChange}/> {/* Installation d'un champ de récupération d'une valeur saisie dans ce champ */}
         <button onClick={addVoter} >Add</button>
       </span>
       <br />
      
 
       <div>
-          <li><button  onClick={startProposalsRegistering} >startProposalsRegistering</button></li>
+          <li><button  onClick={startProposalsRegistering} >startProposalsRegistering</button></li> {/* Création d'un bouton pour chaque changement d'état + déclenchement de chaque changement d'état au déclenchement de l'événement clic */}
           <li><button  onClick={endProposalsRegistering} >endProposalsRegistering</button></li>
           <li><button  onClick={startVotingSession} >startVotingSession</button></li>
           <li><button  onClick={endVotingSession} >endVotingSession</button></li>
@@ -92,27 +94,31 @@ export default AdministratorInterface;
 
 
 /*
-(0) 0xceFEa953Ff6d1B8A8BC003Db67E3F1de893976Fc (1000 ETH)
-(1) 0x9a1A559a9ba32b25f703c31c7DE23F347dE61Bb3 (1000 ETH)
-(2) 0x2658d9c7B5b72d77460FCc853186E617b0f2277D (1000 ETH)
-(3) 0x097039c816B8e60B75F4E54dEDc46D8238b0A252 (1000 ETH)
-(4) 0x196b8cF389888fC1844Af6e1E5605DA86b928cc4 (1000 ETH)
-(5) 0x69CAeDc5223c1D73a4660B49fdb19583956991a8 (1000 ETH)
-(6) 0x9b6Dc9FD0bF83226090cAceD7fC1e66471fF5Fe0 (1000 ETH)
-(7) 0x60786B21ac892a5Ee88605Bf2111E8587AbFE599 (1000 ETH)
-(8) 0xeDD64b27bde0A7Da970f3a333ED42c0959191575 (1000 ETH)
-(9) 0x38b5a56A517dfD479c19E49Fa1f9568a60C06Ec3 (1000 ETH)
+
+(0) 0x1B52C31A69D7e2346E2411aF3eeD2B02FB2eb5D8 (1000 ETH)
+(1) 0x62BF1c9f030191781755C35F427f911998101c75 (1000 ETH)
+(2) 0xb4eE87830f38868A7776237CE8F60b6F72778e5A (1000 ETH)
+(3) 0xEDF7e942D277C56cF556dF086436BDdecb10f51C (1000 ETH)
+(4) 0x5495141384FAf6a8B0eE24Efa3AF63269A44c74d (1000 ETH)
+(5) 0x2CD07fb0F22E11eF7342F2757407126A1E6776eA (1000 ETH)
+(6) 0x0AC1E4F29C3980a291059b171a3144A21f0ae0b3 (1000 ETH)
+(7) 0xdf52d866C056dd616e9EACd36e46A1A11DfB78c1 (1000 ETH)
+(8) 0x98ad92ab5C5aEc6D02f57ce10C612E0a8d0e6763 (1000 ETH)
+(9) 0x6860BEb98daEA1d20cA69D1ac6b59Ee9e4001A0C (1000 ETH)
 
 Private Keys
 ==================
-(0) 0xd79005b22954b89ffda9dabe95948a2b1e322838bf324108bf03f7b6a9800a91
-(1) 0x345880743171721f8bb7e580e5505b5fb746bdc115548d960e984d3550d39a1a
-(2) 0x5fd848e82b93cd1ce22a655961a824e3d802719b0dce70d786e339219efd070b
-(3) 0xa23397a35e23400c1f3565f8d0161904f193718bb0bd645a3063c99f5009fa0b
-(4) 0x472a9871dd6501a20a3071a3538b02864191d1b6223088698fa7d4928979ea9d
-(5) 0xb63b1872db4074fa93c4336cd3005f4f54cd465d065acae97141f35fb6ccc49c
-(6) 0x5887d7e89d96a2ceb7ecd7b1545ca91e9b0abc682ae6f5f054e64f812ec0a248
-(7) 0x2202ced90ee97351464dc8a166495db3ec0add5e06e0694c4136231bbd2c2e71
-(8) 0x149f348bee1478e7c1dcbaa97f1f8bf0be4105448a42cab8f707acda07b7f235
-(9) 0x574a1bc999c68e52d9634b7c2cad0c5f5f0c253026a731a9a462fc7d238fd8f1
+(0) 0x7392a1e3e22e967aab6f1be4040c162f34053b2aa3a4c00647eb89003e0f5574
+(1) 0x36ef0f11b11e6157e0e951521efea771946a96d90a431531e6fce36babecc893
+(2) 0xa1602886f168cd2d054a83ebf40f7365b8ef1cd4a49c04a3810b4589eb64f88e
+(3) 0xb8d61204924947a2e3bff09d4c5586ec1b688a255311e196aadc56939830d392
+(4) 0x3c827d35758ad23cae19a953c5f3910e1fa7a2aba47b57316e463bd6c87743a0
+(5) 0x7fda75b96e30771a0f1a94bdbdcc61ba3bb8a3affcfb6152e655f42dba2c3fdd
+(6) 0x52432822e5aae2bab8be308c05f49067ecd8361e8d2420e6a5bd9a41245fbcb7
+(7) 0x24c2ba25df35e3e69769e0593735daea33e0bfc7b8ad1b5bae5d8cfd143ba500
+(8) 0x3b317b3f87d414153ce3d542109271128281e15d39f321c822aab9b54d161603
+(9) 0xc96788097f47fe524f264295969e815ca305b06d36430b33f684c5829b97382e
+
+
+
 */

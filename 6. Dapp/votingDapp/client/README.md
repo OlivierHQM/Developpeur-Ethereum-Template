@@ -1,3 +1,16 @@
+# Security
+olivier.huynh-quan-minh@celenium.fr
+
+# Administrator manual
+
+
+# User manual
+
+
+
+
+
+
 # React client
 
 This project is bootstraped with [Create React App](https://create-react-app.dev). It is unopinionated with only `web3.js` as an added dependency, so nothing stands in your way.

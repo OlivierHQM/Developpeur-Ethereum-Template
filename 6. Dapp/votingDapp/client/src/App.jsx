@@ -5,18 +5,18 @@ import "./App.css";
 
 function App() {   
   return (
-    <EthProvider>
-      <div id="App" >
+    <EthProvider> {/* Assure la connexion avec la blockchain*/}
+      <div id="App" > 
         <div className="container">
-          <Intro />
-          <CoreInterface></CoreInterface>
+          <Intro /> {/* Récupère le component "Intro" */}
+          <CoreInterface></CoreInterface> {/* Récupère le component "CoreInterface" */}
         </div>
       </div>
     </EthProvider>
   );
 }
 
-export default App;
+export default App; {/* Affiche l'application sur un navigateur si le code est déployé */}
 
 
 
